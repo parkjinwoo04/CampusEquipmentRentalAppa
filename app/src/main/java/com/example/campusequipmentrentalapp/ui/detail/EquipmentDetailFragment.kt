@@ -2,59 +2,79 @@ package com.example.campusequipmentrentalapp.ui.detail
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.campusequipmentrentalapp.R
+import com.example.campusequipmentrentalapp.databinding.FragmentEquipmentDetailBinding
+import com.example.campusequipmentrentalapp.model.Equipment
+import com.example.campusequipmentrentalapp.model.RentalStatus
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class EquipmentDetailFragment : Fragment(R.layout.fragment_equipment_detail) {
+    
+    private var _binding: FragmentEquipmentDetailBinding? = null
+    private val binding get() = _binding!!
+    private var equipment: Equipment? = null
 
-/**
- * A simple [Fragment] subclass.
- * Use the [EquipmentDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class EquipmentDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_equipment_detail, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EquipmentDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        _binding = FragmentEquipmentDetailBinding.bind(view)
+        equipment = arguments?.getSerializable("equipment") as? Equipment
+        
+        equipment?.let { equip ->
+            binding.tvDetailIcon.text = equip.icon
+            binding.tvDetailName.text = equip.name
+            binding.tvDetailCategory.text = equip.category
+            
+            binding.tvDetailStatus.apply {
+                text = equip.status.label
+                when (equip.status) {
+                    RentalStatus.AVAILABLE -> {
+                        setBackgroundResource(R.drawable.bg_status_available)
+                        setTextColor(resources.getColor(R.color.white, null))
+                    }
+                    RentalStatus.RENTED -> {
+                        setBackgroundResource(R.drawable.bg_status_unavailable)
+                        setTextColor(resources.getColor(R.color.white, null))
+                    }
+                    RentalStatus.MAINTENANCE -> {
+                        setBackgroundResource(R.drawable.bg_status_maintenance)
+                        setTextColor(resources.getColor(R.color.white, null))
+                    }
                 }
             }
+            
+            binding.tvDetailDescription.text = equip.description
+            binding.tvDetailLocation.text = "📍 위치: ${equip.location}"
+            binding.tvDetailMaxDays.text = "🗓️ 최대 대여 기간: ${equip.maxRentalDays}일"
+            
+            binding.btnRentEquipment.apply {
+                isEnabled = equip.status.isAvailable
+                if (!equip.status.isAvailable) {
+                    text = "대여 불가능"
+                }
+            }
+        }
+        
+        binding.btnBackDetail.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        
+        binding.btnRentEquipment.setOnClickListener {
+            equipment?.let { equip ->
+                val bundle = Bundle().apply {
+                    putSerializable("equipment", equip)
+                }
+                findNavController().navigate(
+                    R.id.action_equipmentDetailFragment_to_rentalFragment,
+                    bundle
+                )
+            }
+        }
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

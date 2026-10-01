@@ -9,7 +9,6 @@ import com.example.campusequipmentrentalapp.R
 import com.example.campusequipmentrentalapp.adapter.EquipmentAdapter
 import com.example.campusequipmentrentalapp.data.EquipmentRepository
 import com.example.campusequipmentrentalapp.databinding.FragmentEquipmentListBinding
-//import com.example.campusequipmentrentalapp.util.NavKeys
 
 class EquipmentListFragment : Fragment(R.layout.fragment_equipment_list) {
 
@@ -29,7 +28,7 @@ class EquipmentListFragment : Fragment(R.layout.fragment_equipment_list) {
             items = EquipmentRepository.equipmentList,
             onItemClick = { equipment ->
                 val bundle = Bundle().apply {
-                   // putInt(NavKeys.EQUIPMENT_ID, equipment.id)
+                    putSerializable("equipment", equipment)
                 }
 
                 findNavController().navigate(
