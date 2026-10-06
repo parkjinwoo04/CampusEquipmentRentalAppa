@@ -39,4 +39,6 @@
     <string name="unknown_equipment">알 수 없는 기자재</string>
     <string name="back_to_list">기자재 목록으로</string>
     <string name="back_to_home">처음 화면으로</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
