@@ -1,6 +1,6 @@
 package com.example.campusequipmentrentalapp.data
 
-import com.example.campusequipmentrentalapp.data.EquipmentRepository.equipmentList
+//import com.example.campusequipmentrentalapp.data.EquipmentRepository.equipmentList
 import com.example.campusequipmentrentalapp.model.*
 
 class UserRepository {
